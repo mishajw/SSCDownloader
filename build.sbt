@@ -13,6 +13,9 @@ libraryDependencies ++= Seq(
   specs2 % Test
 )
 
+libraryDependencies += "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.15"
+
+
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 // Play provides two styles of routers, one expects its actions to be injected, the
