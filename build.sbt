@@ -1,23 +1,19 @@
-name := """SSCDownloader"""
+name := "SSCDownloaderLift"
 
-version := "1.0-SNAPSHOT"
+version := "0.1-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+scalaVersion := "2.11.1"
 
-scalaVersion := "2.11.6"
+seq(webSettings: _*)
 
-libraryDependencies ++= Seq(
-  jdbc,
-  cache,
-  ws,
-  specs2 % Test
-)
-
-libraryDependencies += "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.15"
-
-
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
-
-// Play provides two styles of routers, one expects its actions to be injected, the
-// other, legacy style, accesses its actions statically.
-routesGenerator := InjectedRoutesGenerator
+libraryDependencies ++= {
+  val liftVersion = "2.6-RC1"
+  Seq(
+    "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
+    "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910"  %
+      "container,test",
+    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" %
+      "container,compile" artifacts Artifact("javax.servlet", "jar", "jar"),
+    "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.15"
+  )
+}

@@ -1,0 +1,30 @@
+body {
+  padding: 30px;
+}
+
+#download-status {
+  display: table;
+}
+
+.downloader-details {
+  display: table-row;
+}
+
+.downloader-attr {
+  display: table-cell;
+  padding: 5px;
+}
+
+.downloader-status {
+  text-align: right;
+  font-size: 150%;
+}
+
+#input-table tr td:first-child {
+  width: 20%;
+  text-align: right;
+}
+
+#input-table input {
+  width: 100%;
+}
