@@ -15,13 +15,13 @@ object Organiser {
   private var notifier: Option[CometNotifier] = None
 
   /**
-   * Object for getting linsk
+   * Object for getting links
    */
   private var retriever: Option[LinkRetriever] = None
 
   /**
    * Register the current notifier
-   * @param notifier
+   * @param notifier Responsible for updating client
    */
   def registerNotifier(notifier: CometNotifier): Unit = {
     this.notifier = Some(notifier)
@@ -46,6 +46,11 @@ object Organiser {
   def start(page: String, fileType: String, threadAmount: Int, location: String): Unit = {
     val links = LinkCrawler.getFilteredLinksForPage(page, fileType)
 
+    if (links.isEmpty) {
+      this.reset()
+      return
+    }
+
     val retriever = new LinkRetriever(links, threadAmount, location, () => notifier match {
       case Some(n) => n.reRender()
       case None =>
@@ -60,5 +65,9 @@ object Organiser {
    */
   def reset() = {
     retriever = None
+    notifier match {
+      case Some(n) => n.reRender()
+      case _ =>
+    }
   }
 }

@@ -8,12 +8,13 @@ import net.liftweb.http.{CometActor, RenderOut}
  *
  * Handles notifying the user of downloads
  */
-class CometNotifier extends CometActor{
+class CometNotifier extends CometActor {
   // Register the CometNotifier so it can be contacted
   Organiser registerNotifier this
 
   override def render: RenderOut =
-    "div *" #> <table class="table" id="download-status">
+    "div *" #>
+    <table class="table" id="download-status">
       <thead>
         <tr>
           <td>Status</td>

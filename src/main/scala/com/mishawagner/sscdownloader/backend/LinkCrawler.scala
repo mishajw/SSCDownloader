@@ -21,7 +21,7 @@ object LinkCrawler {
    * @return list of links
    */
   def getFilteredLinksForPage(url: String, suff: String) =
-    getLinksForPage(url).filter(link => link.toLowerCase.endsWith(suff.toLowerCase))
+    getLinksForPage(url).filter(link => link.toLowerCase endsWith suff.toLowerCase)
 
   /**
    * Get all the links on a page
@@ -44,6 +44,8 @@ object LinkCrawler {
         println("Not a valid URL.") ; ""
       case e: IOException =>
         println("Couldn't reach URL.") ; ""
+      case e =>
+        println("Unknown error") ; e.printStackTrace() ; ""
     }
 
   /**
@@ -61,8 +63,25 @@ object LinkCrawler {
     
     results
       .map(node => node getAttributeByName { if (node.hasAttribute("href")) "href" else "src" })
-      .map(link => if (link.startsWith("http")) link else baseUrl + {
-        if (baseUrl.endsWith("/") || link.startsWith("/")) link else "/" + link
-      })
+      .map(url => formatUrl(url, baseUrl))
+  }
+
+  private def formatUrl(url: String, baseUrl: String): String = {
+    if (url.split("://").length > 1) {
+      url
+    } else if (url.startsWith("//")) {
+      "http:" + url
+    } else if ({
+      val levelSplit = url.split("/").toSeq
+      levelSplit.nonEmpty && levelSplit.head.split(".").length > 1
+    }) {
+      "http://" + url
+    } else if (baseUrl.endsWith("/") && url.startsWith("/")) {
+      baseUrl + url.tail
+    } else if (baseUrl.endsWith("/") || url.startsWith("/")) {
+      baseUrl + url
+    } else {
+      baseUrl + "/" + url
+    }
   }
 }

@@ -28,3 +28,12 @@ body {
 #input-table input {
   width: 100%;
 }
+
+#results-header, #back-button {
+  display: inline-block;
+}
+
+#back-button {
+  margin: 0px 20px;
+  float: right;
+}

@@ -1,9 +1,10 @@
 package com.mishawagner.sscdownloader.backend
 
-import java.io.FileWriter
+import java.io.File
+import java.net.URL
 
-import scala.io.Source
-import scala.xml.{Null, Text, Attribute}
+import scala.sys.process._
+import scala.xml.{Attribute, Null, Text}
 
 /**
  * Created by misha on 13/11/15.
@@ -59,12 +60,11 @@ class Downloader(url: String, location: String, callback: () => Unit) extends Ru
    */
   private def download() = {
     try {
-      val contents = Source fromURL url
-      val out = new FileWriter(location + fileName)
-      out write contents.mkString
-      out.close()
+      new URL(url) #> new File(location + fileName) !!
     } catch {
-      case e: Exception => state = Failed()
+      case e: Exception =>
+        e.printStackTrace()
+        state = Failed()
     }
   }
 
@@ -95,7 +95,7 @@ class Downloader(url: String, location: String, callback: () => Unit) extends Ru
     val (labelType, text) = this.state match {
       case NotStarted() => ("danger", "Not started")
       case InProgress() => ("warning", "In progress")
-      case Finished() =>   ("success", "Finished")
+      case Finished() => ("success", "Finished")
       case Failed() => ("danger", "Download failed")
     }
 

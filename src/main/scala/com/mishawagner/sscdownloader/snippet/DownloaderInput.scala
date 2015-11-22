@@ -4,7 +4,7 @@ import com.mishawagner.sscdownloader.Organiser
 import net.liftweb.common.{Empty, Full}
 import net.liftweb.http.S
 
-import scala.xml.NodeSeq
+import scala.xml.{Attribute, NodeSeq, Null, Text}
 
 /**
  * Created by misha on 14/11/15.
@@ -52,6 +52,16 @@ class DownloaderInput {
 
     Organiser.start(page, fileType, threadAmount, location)
 
+    S redirectTo "/results.html"
+
     in
   }
+
+  def filetypeInput =
+    <select name="filetype">
+      <option value="">All</option>
+      { List(".png", ".gif", ".jpeg", ".pdf", ".zip").map(s =>
+        <option>{s}</option> % Attribute(None, "value", Text(s), Null)
+      )}
+    </select>
 }
