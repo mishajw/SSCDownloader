@@ -1,6 +1,7 @@
 package com.mishawagner.sscdownloader.snippet
 
 import com.mishawagner.sscdownloader.Organiser
+import grizzled.slf4j.Logging
 import net.liftweb.common.{Empty, Full}
 import net.liftweb.http.S
 
@@ -11,7 +12,7 @@ import scala.xml.{Attribute, NodeSeq, Null, Text}
  *
  * Handles input from user
  */
-class DownloaderInput {
+class DownloaderInput extends Logging {
   /**
    * For the body of the HTML
    * @param in nodes
@@ -48,7 +49,7 @@ class DownloaderInput {
       }
     val location = S param "location" getOrElse "/home"
 
-    println(s"$page, $fileType, $threadAmount")
+    info(s"Form submitted with details: $page, $fileType, $threadAmount")
 
     Organiser.start(page, fileType, threadAmount, location)
 

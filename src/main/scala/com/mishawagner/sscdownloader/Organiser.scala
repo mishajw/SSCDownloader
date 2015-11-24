@@ -1,14 +1,15 @@
 package com.mishawagner.sscdownloader
 
-import com.mishawagner.sscdownloader.backend.{Downloader, LinkCrawler, LinkRetriever}
+import com.mishawagner.sscdownloader.backend.{FileDownload, LinkCrawler, LinkRetriever}
 import com.mishawagner.sscdownloader.comet.CometNotifier
+import grizzled.slf4j.Logging
 
 /**
  * Created by misha on 14/11/15.
  *
  * Organises the interactions between the Comet, the Snippet, and backend functions
  */
-object Organiser {
+object Organiser extends Logging {
   /**
    * What's notifying the user
    */
@@ -24,6 +25,7 @@ object Organiser {
    * @param notifier Responsible for updating client
    */
   def registerNotifier(notifier: CometNotifier): Unit = {
+    info("Registered a CometNotifier")
     this.notifier = Some(notifier)
   }
 
@@ -31,7 +33,7 @@ object Organiser {
    * Get the downloaders
    * @return
    */
-  def getDownloaders: Seq[Downloader] = retriever match {
+  def getDownloaders: Seq[FileDownload] = retriever match {
     case Some(r) => r.downloaders
     case None => List()
   }
@@ -44,6 +46,8 @@ object Organiser {
    * @param location where to save the files
    */
   def start(page: String, fileType: String, threadAmount: Int, location: String): Unit = {
+    info("Starting downloading process")
+
     val links = LinkCrawler.getFilteredLinksForPage(page, fileType)
 
     if (links.isEmpty) {
@@ -64,6 +68,7 @@ object Organiser {
    * Reset the downloading
    */
   def reset() = {
+    info("Resetting it all")
     retriever = None
     notifier match {
       case Some(n) => n.reRender()

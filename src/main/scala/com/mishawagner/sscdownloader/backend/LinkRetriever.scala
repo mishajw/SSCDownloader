@@ -1,6 +1,8 @@
 package com.mishawagner.sscdownloader.backend
 
-import java.util.concurrent._
+import akka.actor.{ActorSystem, Props}
+import com.mishawagner.sscdownloader.backend.actors.EmployeeCommunications.{GiveWork, StartWorkers}
+import com.mishawagner.sscdownloader.backend.actors.MasterActor
 
 /**
  * Created by misha on 12/11/15.
@@ -9,16 +11,18 @@ import java.util.concurrent._
  */
 class LinkRetriever(links: Seq[String], threadSize: Int, location: String, callback: () => Unit) {
   /**
-   * Executor for downloaders
-   */
-  val exec = Executors.newFixedThreadPool(threadSize)
-  /**
    * Downloaders
    */
-  val downloaders: Seq[Downloader] = links.map(url => new Downloader(url, location, callback))
+  val downloaders: Seq[FileDownload] = links.map(url => new FileDownload(url, location, callback))
 
   /**
    * Start the download links
    */
-  def downloadLinks(): Unit = downloaders.map(d => exec.submit(d))
+  def downloadLinks(): Unit = {
+    val system = ActorSystem("download-system")
+    val master = system.actorOf(Props[MasterActor], "master0")
+
+    master ! GiveWork(downloaders)
+    master ! StartWorkers(threadSize)
+  }
 }
