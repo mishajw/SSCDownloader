@@ -2,9 +2,9 @@ package com.mishawagner.sscdownloader.snippet
 
 import com.mishawagner.sscdownloader.Organiser
 import grizzled.slf4j.Logging
-import net.liftweb.common.{Empty, Full}
 import net.liftweb.http.S
 
+import scala.util.Try
 import scala.xml.{Attribute, NodeSeq, Null, Text}
 
 /**
@@ -29,40 +29,40 @@ class DownloaderInput extends Logging {
    * @return
    */
   def buttonPressed(in: NodeSeq): NodeSeq = {
-    val page = S param "page" match {
-      case Full(s) => s
-      case Empty => {
-        println("Couldn't get page")
-        return in
-      }
+    for {
+      page <- S.param("page")
+//      fileTypes <- S.params("filetype")
+      otherFiletypes <- S.param("other-filetypes")
+      threadAmount <- S.param("thread-amount")
+      location <- S.param("location")
+    }
+    {
+      val fileTypes = S.params("filetype")
+      val allFileTypes: List[String] = fileTypes ++
+        otherFiletypes.split(",")
+          .map(_.replace("""(?m)\s+$""", ""))
+          .toList
+          .filter(_.nonEmpty)
+
+      info(s"Form submitted with details: $page, $allFileTypes, $threadAmount")
+
+      Organiser.start(
+        page,
+        allFileTypes,
+        Try(threadAmount.toInt).getOrElse(2),
+        location)
+
+      S redirectTo "/results.html"
     }
 
-    val fileType = S param "filetype" getOrElse ""
-    val threadAmount =
-      try {
-        S param "thread-amount" match {
-          case Full(s) => s.toInt
-          case Empty => 5
-        }
-      } catch {
-        case e: NumberFormatException => 5
-      }
-    val location = S param "location" getOrElse "/home"
-
-    info(s"Form submitted with details: $page, $fileType, $threadAmount")
-
-    Organiser.start(page, fileType, threadAmount, location)
-
-    S redirectTo "/results.html"
 
     in
   }
 
-  def filetypeInput =
-    <select name="filetype">
-      <option value="">All</option>
-      { List(".png", ".gif", ".jpeg", ".pdf", ".zip").map(s =>
-        <option>{s}</option> % Attribute(None, "value", Text(s), Null)
-      )}
-    </select>
+  def filetypeInput = List("All", ".png", ".gif", ".jpeg", ".pdf", ".zip").map(s =>
+      <div class="filetype-container">
+        { <input type="checkbox" name="filetype" /> % Attribute(None, "value", Text(s), Null) }
+        <div>{s}</div>
+      </div>
+    )
 }

@@ -41,14 +41,14 @@ object Organiser extends Logging {
   /**
    * Start downloading
    * @param page Page to download from
-   * @param fileType filetype to filter by
+   * @param fileTypes filetype to filter by
    * @param threadAmount amount of threads to use to download
    * @param location where to save the files
    */
-  def start(page: String, fileType: String, threadAmount: Int, location: String): Unit = {
+  def start(page: String, fileTypes: List[String], threadAmount: Int, location: String): Unit = {
     info("Starting downloading process")
 
-    val links = LinkCrawler.getFilteredLinksForPage(page, fileType)
+    val links = LinkCrawler.getFilteredLinksForPage(page, fileTypes)
 
     if (links.isEmpty) {
       this.reset()

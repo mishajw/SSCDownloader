@@ -25,7 +25,7 @@ body {
   text-align: right;
 }
 
-#input-table input {
+#input-table input[type=text] {
   width: 100%;
 }
 
@@ -36,4 +36,13 @@ body {
 #back-button {
   margin: 0px 20px;
   float: right;
+}
+
+.filetype-container > * {
+  display: inline-block;
+}
+
+.filetype-container {
+  margin: 5px 20px;
+  float: left;
 }

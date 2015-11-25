@@ -28,23 +28,25 @@
         <table id="input-table" class="table">
           <tr>
             <td>Page:</td>
-            <td><input name="page" type="text" value="http://www.google.com"></td>
+            <td><input name="page" type="text" value="http://www.google.com" /></td>
           </tr>
           <tr>
-            <td>File type:</td>
-            <!--<td><input name="filetype" type="text" value=""></td>-->
+            <td>File types:</td>
             <td>
-              <select name="filetype" data-lift="DownloaderInput.filetypeInput">
-              </select>
+              <div data-lift="DownloaderInput.filetypeInput"></div>
             </td>
           </tr>
           <tr>
+            <td>Any other file types (comma separated):</td>
+            <td><input type="text" name="other-filetypes" /></td>
+          </tr>
+          <tr>
             <td>Thread amount:</td>
-            <td><input name="thread-amount" type="number" value="2"></td>
+            <td><input name="thread-amount" type="number" value="2" /></td>
           </tr>
           <tr>
             <td>Location:</td>
-            <td><input name="location" type="text" value="/home/misha/Downloads/ssctest/"></td>
+            <td><input name="location" type="text" value="/home/misha/Downloads/ssctest/" /></td>
           </tr>
         </table>
       </div>

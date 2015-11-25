@@ -18,11 +18,18 @@ object LinkCrawler extends Logging {
   /**
    * Get all the links from a page, filtered by suffix
    * @param url page url
-   * @param suff suffix of files to return
+   * @param suffs list of suffixes of files to return
    * @return list of links
    */
-  def getFilteredLinksForPage(url: String, suff: String) =
-    getLinksForPage(url).filter(link => link.toLowerCase endsWith suff.toLowerCase)
+  def getFilteredLinksForPage(url: String, suffs: List[String]) = {
+    val links = getLinksForPage(url)
+    suffs.contains("All") match {
+      case true => links
+      case false => links.filter(link =>
+        suffs.foldLeft(false)((p, suff) =>
+          p || (link.toLowerCase endsWith suff.toLowerCase)))
+    }
+  }
 
   /**
    * Get all the links on a page
@@ -46,7 +53,7 @@ object LinkCrawler extends Logging {
         println("Not a valid URL.") ; ""
       case e: IOException =>
         println("Couldn't reach URL.") ; ""
-      case e =>
+      case e: Exception =>
         println("Unknown error") ; e.printStackTrace() ; ""
     }
 
