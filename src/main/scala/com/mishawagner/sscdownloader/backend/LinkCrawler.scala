@@ -30,17 +30,21 @@ object LinkCrawler extends Logging {
     }
   }
 
-  def getLinksForPage(url: String): List[String] = {
-    try {
-      val doc = Jsoup.connect(url).get()
-
-      LINK_ATTR
-        .flatMap(doc.getElementsByAttribute(_).toArray)
-        .map(_.asInstanceOf[Element])
-        .map(e => e.attr("abs:" + LINK_ATTR.filter(e.hasAttr).head))
-        .toList
-    } catch {
-      case e: Throwable => List()
-    }
+  def getLinksForPage(url: String): List[String] = try {
+    LINK_ATTR
+      .flatMap(attr =>
+        Jsoup
+          // Get the HTML
+          .connect(url)
+          .get()
+          // Get all elements with certain attr
+          .getElementsByAttribute(attr)
+          // Cast to Array[Element]
+          .toArray.map(_.asInstanceOf[Element])
+          // Map to attr values
+          .map(_.attr(s"abs:$attr"))
+      ).toList
+  } catch {
+    case e: Throwable => List()
   }
 }
