@@ -13,7 +13,6 @@ object LinkCrawler extends Logging {
 
   private val LINK_ATTR = Array("href", "src")
 
-
   /**
    * Get all the links from a page, filtered by suffix
    * @param url page url
@@ -30,6 +29,11 @@ object LinkCrawler extends Logging {
     }
   }
 
+  /**
+    * Get all the links for a URL
+    * @param url the url to get
+    * @return list of links
+    */
   def getLinksForPage(url: String): List[String] = try {
     LINK_ATTR
       .flatMap(attr =>
